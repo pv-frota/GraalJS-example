@@ -1,6 +1,6 @@
 package com.example.pvfrota.graalJS.controller;
 
-import com.example.pvfrota.graalJS.model.Parameter;
+import com.example.pvfrota.graalJS.record.DynamicParameterValue;
 import com.example.pvfrota.graalJS.service.GraalService;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +18,7 @@ public class GraalController {
     }
 
     @PostMapping("/run-script")
-    public Object executeScript(@RequestParam String name, @RequestBody Parameter[] parameter) {
+    public Object executeScript(@RequestParam String name, @RequestBody DynamicParameterValue[] parameter) {
         return graalService.runScript(name, parameter);
     }
 }

@@ -16,12 +16,15 @@ CREATE TABLE PARAMETER (
    CONSTRAINT FK_LOGIC FOREIGN KEY (LOGIC_NAME) REFERENCES LOGIC(NAME)
 );
 
-INSERT INTO LOGIC (NAME, DESCRIPTION, SCRIPT, TYPE)
-VALUES ('Sum of A, B and C', 'The sum of the preset parameters A and B with the dynamic parameter C',
-        'let a; let b; let c; function main() { return a + b + c; }', 'INTEGER');
+INSERT INTO LOGIC (NAME, DESCRIPTION, TYPE, SCRIPT)
+VALUES ('Sum of A, B and C', 'The sum of the preset parameters A and B with the dynamic parameter C', 'INTEGER',
+        'let a; let b; let c; function main() { return a + b + c; }');
 
 INSERT INTO PARAMETER (NAME, DESCRIPTION, PARAMETER_TYPE, JAVA_TYPE, VALUE, LOGIC_NAME)
 VALUES ('a', 'Valor A', 'PRESET', 'INTEGER', '50', 'Sum of A, B and C');
 
 INSERT INTO PARAMETER (NAME, DESCRIPTION, PARAMETER_TYPE, JAVA_TYPE, VALUE, LOGIC_NAME)
 VALUES ('b', 'Valor B', 'PRESET', 'INTEGER', '40', 'Sum of A, B and C');
+
+INSERT INTO PARAMETER (NAME, DESCRIPTION, PARAMETER_TYPE, JAVA_TYPE, LOGIC_NAME)
+VALUES ('c', 'Valor C', 'DYNAMIC', 'INTEGER', 'Sum of A, B and C');
