@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
  * @since 22/08/2024
  */
 @RestController
+@RequestMapping("/api/graal")
 public class GraalController {
 
     private final GraalService graalService;

@@ -24,18 +24,20 @@ import java.util.regex.Pattern;
 @Service
 public class GraalService {
     private final String LANGUAGE = "js";
-    private final LogicRepository logicRepository;
+    private final LogicService logicService;
 
-    public GraalService(LogicRepository logicRepository) {
-        this.logicRepository = logicRepository;
+    public GraalService(LogicService logicService) {
+        this.logicService = logicService;
     }
 
     public Object runScript(String logicName, DynamicParameterValue... dynamicParameterValues) {
         try {
-            Logic logic = logicRepository.getReferenceById(logicName);
+            Logic logic = logicService.findById(logicName)
+                    .orElseThrow(() -> new Exception("Não foi possível encontrar a lógica: " + logicName));
             if(dynamicParameterValues.length > 0) handleDynamicParameterValues(logic, dynamicParameterValues);
             return execute(logic);
         } catch (Exception e) {
+            log.error(e);
             throw new RuntimeException(e);
         }
     }
@@ -55,14 +57,13 @@ public class GraalService {
                 return logic.getTypedValue(result);
             }
         } catch (Exception e) {
-            log.error("Ocorreu um erro ao executar a lógica: {}", e.getMessage());
             throw new Exception("Ocorreu um erro ao executar a lógica: " + e);
         }
     }
 
     private void handleDynamicParameterValues(Logic logic, DynamicParameterValue[] dynamicParameterValues) throws Exception {
         List<Parameter> dynamicParameters = logic.getParameters().stream()
-                .filter(p -> p.getParameterTypeEnum().equals(ParameterTypeEnum.DYNAMIC))
+                .filter(p -> p.getParameterType().equals(ParameterTypeEnum.DYNAMIC))
                 .toList();
         try {
             List<DynamicParameterValue> parameterValues = Arrays.asList(dynamicParameterValues);
@@ -74,7 +75,6 @@ public class GraalService {
                 parameter.setValue(parameterValue.value());
             }
         } catch (Exception e) {
-            log.error("Ocorreu um erro ao tratar os parâmetros dinâmicos: {}", e.getMessage());
             throw new Exception("Ocorreu um erro ao tratar os parâmetros dinâmicos: " + e);
         }
     }
