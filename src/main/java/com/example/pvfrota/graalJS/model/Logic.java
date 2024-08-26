@@ -28,7 +28,7 @@ public class Logic {
     @Enumerated(EnumType.STRING)
     private JavaTypeEnum type;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "logic")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "logic", cascade = CascadeType.ALL)
     private List<Parameter> parameters;
 
     public Object getTypedValue(Value value) {
