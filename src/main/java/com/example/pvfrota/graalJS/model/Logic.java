@@ -31,6 +31,10 @@ public class Logic {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "logic", cascade = CascadeType.ALL)
     private List<Parameter> parameters;
 
+    public Logic(String name) {
+        this.name = name;
+    }
+
     public Object getTypedValue(Value value) {
         return type.parse(value);
     }

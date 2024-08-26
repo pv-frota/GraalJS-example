@@ -1,15 +1,18 @@
 package com.example.pvfrota.graalJS.service;
 
+import com.example.pvfrota.graalJS.enumeration.JavaTypeEnum;
 import com.example.pvfrota.graalJS.enumeration.ParameterTypeEnum;
 import com.example.pvfrota.graalJS.model.Logic;
 import com.example.pvfrota.graalJS.model.Parameter;
+import com.example.pvfrota.graalJS.proxy.BigDecimalProxy;
+import com.example.pvfrota.graalJS.proxy.StringProxy;
 import com.example.pvfrota.graalJS.record.DynamicParameterValue;
-import com.example.pvfrota.graalJS.repository.LogicRepository;
 import lombok.extern.log4j.Log4j2;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -83,7 +86,7 @@ public class GraalService {
         int count = 0;
         String regex = "let\\s(\\w+)";
 
-        String cleanedScript = script.replaceAll("\\{[^{}]*}", "");
+        String cleanedScript = script.split("function main")[0];
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(cleanedScript);
         List<String> variables = new ArrayList<>();
@@ -104,7 +107,15 @@ public class GraalService {
     }
 
     private void setAsValue(Context context, Parameter p) {
-        Value value = context.asValue(p.getTypedValue());
-        context.getBindings(LANGUAGE).putMember(p.getName(), value);
+        if(p.getJavaType().equals(JavaTypeEnum.STRING)) {
+            context.getBindings(LANGUAGE).putMember(p.getName(), new StringProxy(p.getValue()));
+            log.info(context.getBindings(LANGUAGE).getMember(p.getValue()));
+        } else if(p.getJavaType().equals(JavaTypeEnum.BIG_DECIMAL)) {
+            context.getBindings(LANGUAGE).putMember(p.getName(), new BigDecimalProxy((BigDecimal) p.getTypedValue()));
+            log.info(context.getBindings(LANGUAGE).getMember(p.getValue()));
+        } else {
+            Value value = context.asValue(p.getTypedValue());
+            context.getBindings(LANGUAGE).putMember(p.getName(), value);
+        }
     }
 }

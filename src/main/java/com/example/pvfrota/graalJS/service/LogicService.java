@@ -4,6 +4,8 @@ import com.example.pvfrota.graalJS.model.Logic;
 import com.example.pvfrota.graalJS.repository.LogicRepository;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +31,7 @@ public class LogicService {
     }
 
     public Logic save(Logic logic) {
+        logic.setScript(handleBase64Script(logic.getScript()));
         return repository.save(logic);
     }
 
@@ -40,5 +43,9 @@ public class LogicService {
 
     public void deleteById(String name) {
         repository.deleteById(name);
+    }
+
+    private String handleBase64Script(String base64) {
+        return new String(Base64.getDecoder().decode(base64), StandardCharsets.UTF_8);
     }
 }
