@@ -2,6 +2,9 @@ package com.example.pvfrota.graalJS.model;
 
 import com.example.pvfrota.graalJS.enumeration.JavaTypeEnum;
 import com.example.pvfrota.graalJS.enumeration.ParameterTypeEnum;
+import com.example.pvfrota.graalJS.serializer.LogicSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +32,7 @@ public class Parameter {
     @Column(name = "JAVA_TYPE")
     private JavaTypeEnum javaType;
 
+    @JsonSerialize(using = LogicSerializer.class)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "LOGIC_NAME")
     private Logic logic;
@@ -47,6 +51,7 @@ public class Parameter {
         this.value = value;
     }
 
+    @JsonIgnore
     public Object getTypedValue() {
         return javaType.parse(value);
     }
