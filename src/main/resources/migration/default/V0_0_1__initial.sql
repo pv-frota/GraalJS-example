@@ -20,7 +20,8 @@ INSERT INTO LOGIC (NAME, DESCRIPTION, TYPE, SCRIPT)
 VALUES ('Sum of A, B and C', 'The sum of the preset parameters A and B with the dynamic parameter C', 'INTEGER',
         'let a; let b; let c; ' ||
         'function main() { ' ||
-        '   return a + b + c; ' ||
+        ' console.log(logicService.findAll()[0].getName()); ' ||
+        ' return a + b + c; ' ||
         '}');
 
 INSERT INTO PARAMETER (NAME, DESCRIPTION, PARAMETER_TYPE, JAVA_TYPE, VALUE, LOGIC_NAME)

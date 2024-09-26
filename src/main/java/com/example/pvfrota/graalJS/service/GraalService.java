@@ -49,12 +49,15 @@ public class GraalService {
         try {
             validateScript(logic.getParameters(), logic.getScript());
 
-            try (Context context = Context.create()) {
+            try (Context context = Context.newBuilder()
+                    .allowAllAccess(true)
+                    .build()) {
                 context.eval(LANGUAGE, logic.getScript());
                 logic.getParameters().forEach(p -> setAsValue(context, p));
 
                 Value function = context.getBindings(LANGUAGE).getMember("main");
-
+                // TODO: pensar meio de passar como parâmetro os services corretos
+                context.getBindings(LANGUAGE).putMember("logicService", logicService);
                 log.info("Executando lógica: {}", logic.getName());
                 Value result = function.execute();
                 return logic.getTypedValue(result);
